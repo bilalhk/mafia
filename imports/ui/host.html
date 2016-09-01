@@ -1,0 +1,10 @@
+<template name="host">
+  <button class="kill-room">Kill Room</button>
+  <button class="start-game">Start Game</button>
+
+  <ul>
+  	{{#each players}}
+  	  <li>{{ name }}</li>
+  	{{/each}}
+  </ul>
+</template>

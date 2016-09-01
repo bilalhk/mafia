@@ -1,0 +1,18 @@
+<body>
+  <button class="nuke">Reset</button>
+  {{ id }}
+  {{ state }}
+  <br/>
+
+  {{#if showLanding }}
+	  {{> landing }}
+  {{else}}
+	  {{#if showHost }}
+		  {{> host }}
+    {{else}}
+      {{#if showWait}}
+        {{> wait}}
+      {{/if}}
+	  {{/if}}
+  {{/if}}
+</body>
