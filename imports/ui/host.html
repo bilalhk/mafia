@@ -1,10 +1,25 @@
 <template name="host">
+  {{#if gameStarted }}
+    {{> hostview }}
+  {{else}}
+    {{> lobby }}
+  {{/if }}
+</template>
+
+<template name="lobby">
   <button class="kill-room">Kill Room</button>
   <button class="start-game">Start Game</button>
 
   <ul>
-  	{{#each players}}
+  	{{#each players }}
   	  <li>{{ name }}</li>
-  	{{/each}}
+  	{{/each }}
   </ul>
+</template>
+
+<template name="hostview">
+  current state: {{ state }}
+
+  <br/>
+  <button class="next-phase">Next Phase</button>
 </template>

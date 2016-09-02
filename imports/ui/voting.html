@@ -1,0 +1,11 @@
+<template name="vote">
+  {{#if amTarget }}
+    You are on trial
+  {{else}}
+    {{ target }}
+
+    <br/>
+    <button class="yes">Yes</button>
+    <button class="no">No</button>
+  {{/if}}
+</template>

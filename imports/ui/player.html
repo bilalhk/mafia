@@ -1,0 +1,25 @@
+<template name="player">
+  Your role: {{role}}
+  <br/>
+
+  {{#if amDead }}
+    {{> hell}}
+  {{else}}{{#if showConversation }}
+    {{> conversation }}
+  {{else}}{{#if showAcusing }}
+    {{> acusing }}
+  {{else}}{{#if showVoting }}
+    {{> vote }}
+  {{else}}{{#if showWait }}
+    {{> wait }}
+  {{else}}{{#if showNight }}
+    {{> night }}
+
+
+  {{/if}}
+  {{/if}}
+  {{/if}}
+  {{/if}}
+  {{/if}}
+  {{/if}}
+</template>

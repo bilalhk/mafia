@@ -1,0 +1,13 @@
+<template name="acusing">
+  <label><input type="radio" name="vote" value="" checked> None</label>
+
+  {{#each players }}
+    {{#if isNotMe id }}
+      <br/>
+      <label><input type="radio" name="vote" value="{{id}}"/>{{name}}</label>
+    {{/if}}
+  {{/each}}
+  
+  <br/>
+  <button class="vote">Choose</button>
+</template>
