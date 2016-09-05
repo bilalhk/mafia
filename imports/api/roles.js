@@ -1,4 +1,5 @@
 import { Teams } from './teams.js';
+import { Menus } from './menus.js';
 
 export const Roles = {
 	Villager: {
@@ -11,6 +12,8 @@ export const Roles = {
 	},
 	Mafioso: {
 		name: 'Mafioso',
-		alignment: Teams.Mafia
+		alignment: Teams.Mafia,
+		menu: Menus.Unary,
+		menuFilter: (player) => player.dead || player.role.alignment === Teams.Mafia
 	}
 };

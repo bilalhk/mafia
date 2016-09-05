@@ -22,6 +22,9 @@ Template.lobby.helpers({
 Template.hostview.helpers({
 	state() {
 		return Games.find({ }).fetch()[0].state;
+	},
+	gameOver() {
+		return Games.find({ }).fetch()[0].state === 'game-over';
 	}
 });
 

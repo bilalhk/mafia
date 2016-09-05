@@ -25,6 +25,9 @@ Template.player.helpers({
 	showNight() {
 		return Games.find({ }).fetch()[0].state === 'night';
 	},
+	gameOver() {
+		return Games.find({ }).fetch()[0].state === 'game-over';
+	},
 	showWait() {
 		return true;
 	},

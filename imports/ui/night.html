@@ -1,11 +1,27 @@
 <template name="night">
   {{#if hasActionMenu }}
-    {{> unarymenu}}
+    {{> unarymenu }}
   {{/if}}
-  {{#if canSeeMafiaChat }}
-    {{> mafiachat}}
-  {{/if}}
+  {{> chat }}
 </template>
 
-<template name="unarymenu"></template>
-<template name="mafiachat"></template>
+<template name="unarymenu">
+  <div>
+    {{#each players }}
+      <div>
+        <button class="action" value="{{id}}" disabled="{{canAct}}">{{name}}</button>
+      </div>
+    {{/each}}
+  </div>
+</template>
+
+<template name="chat">
+  <div>
+    <ul>
+      {{#each messages }}
+        <li>{{from}}: {{content}}</li>
+      {{/each}}
+    </ul>
+  </div>
+  <input type="text" name="messagebox"><button class="send">Send</button>
+</template>

@@ -21,7 +21,7 @@ Template.vote.helpers({
 });
 
 Template.vote.events({
-	'click .yes'(event, template) {
+	'click .yes'(event) {
 		event.preventDefault();
 
 		let vote = Votes.find({ id: Session.get('id') }).fetch();
@@ -33,7 +33,7 @@ Template.vote.events({
 			Votes.insert({ id: Session.get('id'), value: 'yes' });
 		}
 	},
-	'click .no'(event, template) {
+	'click .no'(event) {
 		event.preventDefault();
 
 		let vote = Votes.find({ id: Session.get('id') }).fetch();
