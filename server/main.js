@@ -7,6 +7,8 @@ import { Votes } from '../imports/api/votes.js';
 import { Lynchs } from '../imports/api/lynchs.js';
 import { Messages } from '../imports/api/messages.js';
 import { Actions } from '../imports/api/actions.js';
+import { Voices } from '../imports/api/voices.js';
+import { Results } from '../imports/api/results.js';
 
 import { Teams } from '../imports/api/teams.js';
 import { Roles } from '../imports/api/roles.js';
@@ -54,6 +56,11 @@ function checkGameOver() {
 
 	if (Object.keys(remainingTeams).length === 1) {
 		Games.update(Games.findOne({ })._id, { $set: { state: 'game-over' } });
+		Voices.insert({
+			content: 'Game over. '
+				+ Object.keys(remainingTeams)[0]
+				+ ' wins'
+		});
 	}
 }
 
@@ -62,7 +69,7 @@ function kill(id) {
 	let player = Players.findOne({ id: id });
 
 	if (player.isImmune) {
-		return 'That player was immune.';
+		return false;
 	}
 
 	Players.update(player._id, { $set: { dead: true } });
@@ -78,7 +85,7 @@ function kill(id) {
 			});
 		}
 	}
-	return 'You successfully killed that player.'
+	return true;
 }
 
 Meteor.startup(() => {
@@ -91,6 +98,8 @@ Meteor.startup(() => {
 			Lynchs.remove({ });
 			Messages.remove({ });
 			Actions.remove({ });
+			Voices.remove({ });
+			Results.remove({ });
 		},
 		startGame() {
 			let players = Players.find({ }).fetch();
@@ -111,6 +120,9 @@ Meteor.startup(() => {
 			let game = Games.find({ }).fetch()[0];
 
 			switch(game.state) {
+				case 'day-conversation':
+					Voices.insert({ content: 'begin acusing' });
+					break;
 				case 'day-acuse':
 					console.log('in day acuse');
 					let votes = Votes.find({ }).fetch();
@@ -150,6 +162,9 @@ Meteor.startup(() => {
 					console.log(Lynchs.find({ }).count());
 					if (Lynchs.find({ }).count() === 0) {
 						game.state = nextPhase[game.state];
+						Voices.insert({ content: 'It is now night time' });
+					} else {
+						Voices.insert({ content: 'Someone is on trial' });
 					}
 					break;
 				case 'day-vote':
@@ -162,8 +177,8 @@ Meteor.startup(() => {
 
 					console.log(playerVotes);
 					let lynch = Lynchs.find({ }).fetch()[0];
+					let player = Players.find({ id: lynch.id }).fetch()[0];
 					if (playerVotes.yes > playerVotes.no) {
-						let player = Players.find({ id: lynch.id }).fetch()[0];
 						console.log(lynch.id);
 						console.log(player.name);
 						Players.update(player._id, { $set: { dead: true } });
@@ -173,23 +188,53 @@ Meteor.startup(() => {
 					Lynchs.remove(lynch._id);
 					Votes.remove({ });
 
+					Voices.insert({
+						content: player.name
+							+ ' was found ' 
+							+ (playerVotes.yes > playerVotes.no ? 'guilty' : 'innocent')
+							+ 'with a vote of '
+							+ playerVotes.yes
+							+ ' to '
+							+ playerVotes.no
+					});
+
+					if (playerVotes.yes > playerVotes.no) {
+						Voices.insert({
+							content: 'their role was '
+								+ player.role.name
+						});
+					}
+
 					if (Lynchs.find({ }).count() > 0) {
 						return;
 					}
+
+					Voices.insert({ content: 'It is now night time' });
 					break;
 				case 'night':
+					Voices.insert({ content: 'night is over.'});
 					console.log('in night');
 					let actions = Actions.find({ }).fetch();
 					var action = actions.length > 0 ? actions[0] : null;
 					while (action) {
 						console.log(action);
 						let player = Players.findOne({ id: action.id });
+						let target = Players.findOne({ id: action.value });
 						switch (actions[0].type) {
 							case Roles.Mafioso.name:
 								let result = kill(action.value);
+								if (result) {
+									Results.insert({ id: player.id, msg: 'You successfully killed ' + target.name });
+									Voices.insert({
+										content: target.name
+											+ ' was killed by the mafia.  Their role was '
+											+ target.role.name
+									});
+								} else {
+									Results.insert({ id: player.id, msg: target.name + ' was immune' });
+								}
 								break;
 							case 'Change Roles':
-								let target = Players.findOne({ id: actions[0].target });
 								target.role = actions[0].role;
 						}
 

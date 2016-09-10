@@ -4,8 +4,42 @@ import { Session } from 'meteor/session';
 
 import { Players } from '../api/players.js';
 import { Games } from '../api/games.js';
+import { Voices } from '../api/voices.js';
 
 import './host.html';
+
+let messages = [];
+let playFn = () => {
+	if (responsiveVoice.isPlaying()) {
+		setTimeout(playFn, 0);
+	} else {
+		responsiveVoice.speak(messages.shift());
+		if (messages.length > 0) {
+			setTimeout(playFn, 0);
+		}
+	}
+};
+
+let nextPhaseFn = () => {
+	Meteor.call('nextPhase');
+	setTimeout(nextPhaseFn, 30000);
+}
+
+Template.host.onCreated(() => {
+	Voices.find({ }).observe({
+		added: (voice) => {
+			messages.push(voice.content);
+			if (messages.length === 1) {
+				setTimeout(playFn, 0);
+			}
+		}
+	})
+});
+
+Template.hostview.onCreated(() => {
+	responsiveVoice.speak('the game has started.  it is day time.');
+	setTimeout(nextPhaseFn, 30000);
+});
 
 Template.host.helpers({
 	gameStarted() {
