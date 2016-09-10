@@ -1,1 +1,75 @@
-/* CSS declarations go here */
+html, body {
+	height: 100%;
+}
+
+div {
+	width: 100%;
+}
+
+.header, .content-area > div {
+	background-color: white;
+}
+
+.header, .role-label {
+	height: 40px;
+}
+
+.header {
+	white-space: nowrap;
+	overflow: hidden;
+}
+
+.content-area {
+	height: calc(100% - 40px);
+}
+
+.full-height, .landing {
+	height: 100%;
+}
+
+.half-height {
+	height: 50%;
+}
+
+.full-width {
+	width: 100%;
+	text-align: center;
+}
+
+.half-width {
+	width: 50%;
+}
+
+.third-width {
+	width: 30%;
+}
+
+.padded {
+	padding: 10px;
+}
+
+.join-room-div input {
+	height: 30%;
+}
+
+.join-room-div button {
+	height: 70%;
+}
+
+.bottom-aligned {
+	bottom: 0px;
+	position: absolute;
+}
+
+.chat .bottom-aligned.background {
+	bottom: 40px;
+	height: auto;
+}
+
+.chat .bottom-aligned {
+	height: 40px;
+}
+
+.background {
+	z-index: -1;
+}

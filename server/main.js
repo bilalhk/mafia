@@ -58,6 +58,7 @@ function checkGameOver() {
 }
 
 function kill(id) {
+	console.log('killing player ' + id);
 	let player = Players.findOne({ id: id });
 
 	if (player.isImmune) {
@@ -66,8 +67,10 @@ function kill(id) {
 
 	Players.update(player._id, { $set: { dead: true } });
 	if (player.role.name === Roles.Mafioso.name) {
+		console.log('player was mafia');
 		let mafia = Players.find({ role: { alignment: Teams.Mafia }, dead: false });
 		if (mafia.length > 1) {
+			console.log('making another mafia mafioso');
 			Actions.insert({
 				type: 'Change Roles',
 				target: mafia[0].id,
@@ -181,10 +184,13 @@ Meteor.startup(() => {
 					while (action) {
 						console.log(action);
 						let player = Players.findOne({ id: action.id });
-						switch (actions[i].type) {
+						switch (actions[0].type) {
 							case Roles.Mafioso.name:
 								let result = kill(action.value);
 								break;
+							case 'Change Roles':
+								let target = Players.findOne({ id: actions[0].target });
+								target.role = actions[0].role;
 						}
 
 						Actions.remove(action._id);

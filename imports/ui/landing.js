@@ -28,7 +28,7 @@ Template.landing.events({
 	'click .join-room'(event) {
 		event.preventDefault();
 
-		var name = event.currentTarget.nextElementSibling.value;
+		var name = event.currentTarget.previousElementSibling.value;
 
 		Players.insert({ name: name, id: Session.get('id') });
 		Session.set('showLanding', false);

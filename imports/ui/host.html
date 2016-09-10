@@ -7,19 +7,22 @@
 </template>
 
 <template name="lobby">
-  <button class="kill-room">Kill Room</button>
-  <button class="start-game">Start Game</button>
+  <div class="full-width padded btn-group">
+    <button class="btn btn-primary half-width kill-room">Kill Room</button>
+    <button class="btn btn-primary half-width start-game">Start Game</button>
+  </div>
 
-  <ul>
+  <ul class="list-group">
   	{{#each players }}
-  	  <li>{{ name }}</li>
+  	  <li class="list-group-item">{{ name }}</li>
   	{{/each }}
   </ul>
 </template>
 
 <template name="hostview">
-  current state: {{ state }}
+  <div>
+    current state: {{ state }}
+  </div>
 
-  <br/>
-  <button class="next-phase" disabled="{{gameOver}}">Next Phase</button>
+  <button class="btn btn-primary next-phase" disabled="{{gameOver}}">Next Phase</button>
 </template>

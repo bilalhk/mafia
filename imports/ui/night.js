@@ -46,12 +46,15 @@ Template.chat.events({
 	'click .send': (event, template) => {
 		event.preventDefault();
 
-		let message = template.find('input:text[name=messagebox]').value;
+		let messageBox = template.find('input:text[name=messagebox]');
+		let message = messageBox.value;
 		Messages.insert({
 			id: Teams.Mafia,
 			from: Players.findOne({ id: Session.get('id') }).name,
 			content: message
 		});
+
+		messageBox.value = "";
 	}
 });
 

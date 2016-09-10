@@ -1,5 +1,16 @@
 <template name="landing">
-  <button class="create-room" disabled="{{ createAttr }}">Create Room</button>
-  <button class="join-room" disabled="{{ joinAttr }}">Join Room</button>
-  <input type="text" />
+  <div class="landing">
+    <div class="half-height padded">
+      <button class="btn btn-primary create-room full-width full-height" disabled="{{ createAttr }}">
+        Create Room
+      </button>
+    </div>
+
+    <div class="half-height padded join-room-div">
+      <input class="full-width" type="text" />
+      <button class="btn btn-primary join-room full-width" disabled="{{ joinAttr }}">
+        Join Room
+      </button>
+    </div>
+  </div>
 </template>

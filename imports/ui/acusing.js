@@ -24,10 +24,10 @@ Template.acusing.events({
 		event.preventDefault();
 
 		let vote = Votes.find({ id: Session.get('id') }).fetch();
-		let value = template.find('input:radio[name=vote]:checked').value;
+		let value = event.target.value;
 
 		if (vote.length > 0) {
-			Votes.update(value._id, { $set: { value: value } });
+			Votes.update(vote[0]._id, { $set: { value: value } });
 		}
 		else {
 			Votes.insert({ id: Session.get('id'), value: value });

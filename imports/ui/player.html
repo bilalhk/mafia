@@ -1,9 +1,10 @@
 <template name="player">
-  Your role: {{role}}
-  <br/>
-
+  <div class="role-label">
+    Your role: {{role}}
+  </div>
+  
   {{#if gameOver}}
-    <div>Game Over</div>
+    <div class="full-screen">Game Over</div>
   {{else}}{{#if amDead }}
     {{> hell}}
   {{else}}{{#if showConversation }}

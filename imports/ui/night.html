@@ -6,22 +6,24 @@
 </template>
 
 <template name="unarymenu">
-  <div>
+  <div class="full-width">
     {{#each players }}
-      <div>
-        <button class="action" value="{{id}}" disabled="{{canAct}}">{{name}}</button>
-      </div>
+      <button class="btn btn-primary third-width action" value="{{id}}" disabled="{{canAct}}">{{name}}</button>
     {{/each}}
   </div>
 </template>
 
 <template name="chat">
-  <div>
-    <ul>
-      {{#each messages }}
-        <li>{{from}}: {{content}}</li>
-      {{/each}}
-    </ul>
+  <div class="chat">
+    <div class="full-width bottom-aligned background">
+      <ul class="list-group">
+        {{#each messages }}
+          <li class="list-group-item">{{from}}: {{content}}</li>
+        {{/each}}
+      </ul>
+    </div>
+    <div class="full-width bottom-aligned">
+      <input type="text" name="messagebox"><button class="btn btn-primary send">Send</button>
+    </div>
   </div>
-  <input type="text" name="messagebox"><button class="send">Send</button>
 </template>

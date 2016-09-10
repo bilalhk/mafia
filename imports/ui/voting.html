@@ -1,11 +1,17 @@
 <template name="vote">
-  {{#if amTarget }}
-    You are on trial
-  {{else}}
-    {{ target }}
+  <div class="full-width hanging-target">
+    {{#if amTarget }}
+      You are on trial
+    {{else}}
+      {{ target }} is on trial
+    {{/if}}
+  </div>
 
-    <br/>
-    <button class="yes">Yes</button>
-    <button class="no">No</button>
+  {{#if amTarget }}
+  {{else}}
+    <div class="full-width padded btn-group">
+      <button class="btn btn-primary half-width yes">Yes</button>
+      <button class="btn btn-primary half-width no">No</button>
+    </div>
   {{/if}}
 </template>

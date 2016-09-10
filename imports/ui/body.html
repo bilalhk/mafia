@@ -1,16 +1,22 @@
 <body>
-  <button class="nuke">Reset</button>
-  {{ id }}
-  {{ state }}
-  <br/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <div class="header">
+    <button class="btn btn-primary nuke">Reset</button>
+    <span>
+      {{ id }}
+      {{ state }}
+    </span>
+  </div>
 
-  {{#if showLanding }}
-	  {{> landing }}
-  {{else}}
-	  {{#if showHost }}
-		  {{> host }}
+  <div class="content-area">
+    {{#if showLanding }}
+      {{> landing }}
     {{else}}
-      {{> player}}
-	  {{/if}}
-  {{/if}}
+      {{#if showHost }}
+        {{> host }}
+      {{else}}
+        {{> player}}
+      {{/if}}
+    {{/if}}
+  </div>
 </body>
