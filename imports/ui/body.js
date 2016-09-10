@@ -18,6 +18,7 @@ import './wait.js';
 import './voting.js';
 import './player.js';
 import './night.js';
+import './nightMessages.js';
 
 Session.set('showLanding', true);
 Session.set('id', Random.id());

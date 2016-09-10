@@ -22,25 +22,25 @@ const nextPhase = {
 };
 
 const roleOrder = [
-	Roles.Villager,
-	Roles.Villager,
-	Roles.Villager,
-	Roles.Villager,
+	Roles.Mason,
+	Roles.Mason,
+	Roles.Doctor,
+	Roles.Vigilante,
 	Roles.Mafioso,
+	Roles.SerialKiller,
+	Roles.Doctor,
+	Roles.MobGrunt,
+	Roles.Vigilante,
 	Roles.Villager,
-	Roles.Villager,
+	Roles.Mason,
 	Roles.MobGrunt,
 	Roles.Villager,
+	Roles.Doctor,
 	Roles.Villager,
-	Roles.Villager,
+	Roles.Vigilante,
 	Roles.MobGrunt,
 	Roles.Villager,
-	Roles.Villager,
-	Roles.Villager,
-	Roles.Villager,
-	Roles.MobGrunt,
-	Roles.Villager,
-	Roles.Villager,
+	Roles.Mason,
 	Roles.Villager
 ];
 
@@ -81,11 +81,30 @@ function kill(id) {
 			Actions.insert({
 				type: 'Change Roles',
 				target: mafia[0].id,
-				role: Roles.Mafioso
+				role: Roles.Mafioso,
+				priority: 100
 			});
 		}
 	}
 	return true;
+}
+
+function simpleKillAction(action, player, target, source) {
+	let result = kill(action.value);
+	if (result) {
+		Results.insert({ id: player.id, msg: 'You successfully killed ' + target.name });
+		Results.insert({ id: target.id, msg: 'You were killed' });
+		Voices.insert({
+			content: target.name
+				+ ' was killed by '
+				+ source
+				+ '.  Their role was '
+				+ target.role.name
+		});
+	} else {
+		Results.insert({ id: player.id, msg: target.name + ' was immune' });
+		Results.insert({ id: target.id, msg: 'Someone tried to kill you but you were immune' });
+	}
 }
 
 Meteor.startup(() => {
@@ -102,16 +121,17 @@ Meteor.startup(() => {
 			Results.remove({ });
 		},
 		startGame() {
-			let players = Players.find({ }).fetch();
+			let players = Players.find({ }, { sort: ['id'] }).fetch();
 			if (players.length < 5) {
 				return;
 			}
 
 			Games.insert({ state: 'day-conversation' });
 
-			for(let i = 0; i < players.length; i++) {
+			for (let i = 0; i < players.length; i++) {
 				Players.update(players[i]._id, { $set: {
 					role: roleOrder[i],
+					isImmune: roleOrder[i].isImmune || false,
 					dead: false
 				} });
 			}
@@ -214,34 +234,48 @@ Meteor.startup(() => {
 				case 'night':
 					Voices.insert({ content: 'night is over.'});
 					console.log('in night');
-					let actions = Actions.find({ }).fetch();
+					let actions = Actions.find({ }, { sort: [['priority', 'desc']] }).fetch();
 					var action = actions.length > 0 ? actions[0] : null;
 					while (action) {
 						console.log(action);
 						let player = Players.findOne({ id: action.id });
 						let target = Players.findOne({ id: action.value });
-						switch (actions[0].type) {
+						switch (action.type) {
 							case Roles.Mafioso.name:
-								let result = kill(action.value);
-								if (result) {
-									Results.insert({ id: player.id, msg: 'You successfully killed ' + target.name });
-									Voices.insert({
-										content: target.name
-											+ ' was killed by the mafia.  Their role was '
-											+ target.role.name
-									});
-								} else {
-									Results.insert({ id: player.id, msg: target.name + ' was immune' });
-								}
+								simpleKillAction(action, player, target, 'the mafia');
+								break;
+							case Roles.Vigilante.name:
+								simpleKillAction(action, player, target, 'a vigilante');
+								break;
+							case Roles.SerialKiller.name:
+								simpleKillAction(action, player, target, 'a serial killer');
+								break;
+							case Roles.Doctor.name:
+								Players.update(target._id, { $set: { isImmune: true } });
+								Actions.insert({
+									type: 'Remove Immunity',
+									value: target.id,
+									priority: -1
+								});
 								break;
 							case 'Change Roles':
-								target.role = actions[0].role;
+								target.role = action.role;
+								Results.insert({
+									id: target.id,
+									msg: 'You have become the Mafioso'
+								});
+							case 'Remove Immunity':
+								Players.update(target._id, { $set: { isImmune: target.role.isImmune || false } });
 						}
 
 						Actions.remove(action._id);
-						actions = Actions.find({ }).fetch();
+						actions = Actions.find({ }, { sort: [['priority', 'desc']] }).fetch();
 						action = actions.length > 0 ? actions[0] : null;
 					}
+					break;
+				case 'night-result':
+					Results.remove({ });
+					Messages.remove({ });
 					break;
 			}
 

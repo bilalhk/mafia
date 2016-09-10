@@ -21,8 +21,8 @@ Template.chat.helpers({
 	messages() {
 		let player = Players.findOne({ id: Session.get('id') });
 
-		if (player.role.alignment === Teams.Mafia) {
-			return Messages.find({ id: Teams.Mafia });
+		if (player.role.chat) {
+			return Messages.find({ id: player.role.chat });
 		}
 
 		return [];
@@ -36,8 +36,9 @@ Template.unarymenu.helpers({
 		return Players
 			.find({ })
 			.map(p => {
-				p.canAct = Roles[player.role.name].menuFilter(p);
-				return p;
+				let newP = Object.create(p);
+				newP.canAct = Roles[player.role.name].menuFilter(newP, Session);
+				return newP;
 			});
 	}
 });
@@ -45,11 +46,12 @@ Template.unarymenu.helpers({
 Template.chat.events({
 	'click .send': (event, template) => {
 		event.preventDefault();
+		let player = Players.findOne({ id: Session.get('id') });
 
 		let messageBox = template.find('input:text[name=messagebox]');
 		let message = messageBox.value;
 		Messages.insert({
-			id: Teams.Mafia,
+			id: player.role.chat,
 			from: Players.findOne({ id: Session.get('id') }).name,
 			content: message
 		});
@@ -59,7 +61,7 @@ Template.chat.events({
 });
 
 Template.unarymenu.events({
-	'click .action'(event, template) {
+	'click .action': (event, template) => {
 		event.preventDefault();
 
 		let player = Players.findOne({ id: Session.get('id') });
@@ -73,7 +75,8 @@ Template.unarymenu.events({
 			Actions.insert({
 				id: Session.get('id'),
 				value: value,
-				type: player.role.name
+				type: player.role.name,
+				priority: player.role.priority
 			});
 		}
 	}

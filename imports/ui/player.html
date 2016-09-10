@@ -15,10 +15,13 @@
     {{> vote }}
   {{else}}{{#if showNight }}
     {{> night }}
+  {{else}}{{#if showNightMessages }}
+    {{> nightmessages }}
   {{else}}{{#if showWait }}
     {{> wait }}
 
 
+  {{/if}}
   {{/if}}
   {{/if}}
   {{/if}}
