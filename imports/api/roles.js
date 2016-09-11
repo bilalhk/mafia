@@ -2,6 +2,10 @@ import { Teams } from './teams.js';
 import { Menus } from './menus.js';
 
 export const Roles = {
+	Pusheen: {
+		name: 'Pusheen',
+		alignment: Teams.Town
+	},
 	Villager: {
 		name: 'Villager',
 		alignment: Teams.Town

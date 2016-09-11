@@ -27,6 +27,7 @@ const roleOrder = [
 	Roles.Doctor,
 	Roles.Vigilante,
 	Roles.Mafioso,
+	Roles.Pusheen,
 	Roles.SerialKiller,
 	Roles.Doctor,
 	Roles.MobGrunt,
